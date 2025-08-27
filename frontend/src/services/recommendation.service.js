@@ -26,7 +26,7 @@ const getRecommendations = (
     )
   );
 
-  if (formData?.selectedFeatures.length > 0) {
+  if (formData?.selectedFeatures?.length > 0) {
     recomendationProducts = recomendationProducts.map((product) => {
       const matchedPreferences = product.preferences.filter((pref) =>
         formData?.selectedPreferences.includes(pref)
@@ -42,7 +42,7 @@ const getRecommendations = (
     });
 
     // Ordenar pelo score (e em empate fica o último válido)
-    recomendationProducts.sort((a, b) => a.score - b.score);
+    recomendationProducts.sort((a, b) => b.score - a.score);
   }
 
   if (formData?.selectedRecommendationType === 'SingleProduct') {

@@ -68,7 +68,10 @@ describe('recommendationService', () => {
 
   test('Retorna o último match em caso de empate para SingleProduct', () => {
     const formData = {
-      selectedPreferences: ['Automação de marketing', 'Integração com chatbots'],
+      selectedPreferences: [
+        'Automação de marketing',
+        'Integração com chatbots',
+      ],
       selectedRecommendationType: 'SingleProduct',
     };
 
@@ -79,5 +82,50 @@ describe('recommendationService', () => {
 
     expect(recommendations).toHaveLength(1);
     expect(recommendations[0].name).toBe('RD Conversas');
+  });
+  //Meus testes (Gabriel Batemarque):
+  test('Retorna uma lista vazia caso não haja nehuma preferência selecionada', () => {
+    const formData = {
+      selectedPreferences: [],
+      selectedFeatures: [],
+      selectedRecommendationType: 'MultipleProducts',
+    };
+    const recommendations = recommendationService.getRecommendations(
+      formData,
+      mockProducts
+    );
+
+    expect(recommendations).toEqual([]);
+  });
+
+  test('Não retorna produtos quando apenas features são selecionadas sem preferences', () => {
+    const formData = {
+      selectedPreferences: [],
+      selectedFeatures: ['Chat ao vivo e mensagens automatizadas'],
+      selectedRecommendationType: 'MultipleProducts',
+    };
+
+    const recommendations = recommendationService.getRecommendations(
+      formData,
+      mockProducts
+    );
+
+    expect(recommendations).toHaveLength(0);
+  });
+
+  test('Ordena produtos por score corretamente em MultipleProducts', () => {
+    const formData = {
+      selectedPreferences: ['Automação de marketing'],
+      selectedFeatures: ['Rastreamento de comportamento do usuário'],
+      selectedRecommendationType: 'MultipleProducts',
+    };
+
+    const recommendations = recommendationService.getRecommendations(
+      formData,
+      mockProducts
+    );
+
+    const lastProduct = recommendations[recommendations.length - 1];
+    expect(lastProduct.score).toBeGreaterThanOrEqual(recommendations[0].score);
   });
 });
